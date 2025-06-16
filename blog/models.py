@@ -1,7 +1,11 @@
 from django.db import models
 from django.conf import settings
 from blog.utils import generate_unique_slug
+from django_ckeditor_5.fields import CKEditor5Field
 
+# class BlogPost(models.Model):
+#     title = models.CharField(max_length=200)
+#     content = RichTextField() 
 
 class BlogPost(models.Model):
     author = models.ForeignKey(
@@ -12,7 +16,7 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True, max_length=255)
     thumbnail = models.ImageField(upload_to='blog_images/', blank=True, null=True)
-    content = models.TextField()
+    content = CKEditor5Field('Content', config_name='extends')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
