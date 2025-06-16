@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}BlogSphere | Home{% endblock %}
+{% block content %}
+<div id="index" class="page">
+    <main class="main-content">
+        <section class="hero">
+            <h1 class="hero-title">Share Your Stories</h1>
+            <p class="hero-subtitle">Discover amazing content from writers around the world</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'create' %}" class="btn btn-primary">Start Writing</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Login to write</a>
+            {% endif %}
+        </section>
+
+        <section class="blogs-section">
+            <div class="blogs-grid" id="blogsGrid">
+                
+            </div>
+            <div id="loading" style="display:none;">
+                Loading more items...
+            </div>
+        </section>
+    </main>
+</div>
+<script>
+// infinite scroll 
+let currentPage = 1;
+let loading = false;
+let hasNext = true;
+
+const blogsGrid = document.getElementById('blogsGrid');
+const loadingIndicator = document.getElementById('loading');
+
+function fetchItems(page) {
+  if (loading || !hasNext) return;
+  loading = true;
+  loadingIndicator.style.display = 'block';
+  fetch(`/blogs/?page=${page}`)
+    .then(response => response.json())
+    .then(data => {
+      data.blogs.forEach(blog => {
+        const blogCard = document.createElement('div');
+        blogCard.className = 'blog-card animate-slide-up';
+        blogCard.onclick = () => window.location.href = `/detail/${blog.author}/${blog.slug}`;
+        blogCard.innerHTML = `
+                    <div class="blog-image"><img src="${blog.thumbnail}" alt="${blog.thumbnail}"></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">${blog.title}</h3>
+                        <p class="blog-excerpt">${blog.title}</p>
+                        <div class="blog-meta">
+                            <div class="blog-author">
+                                <div class="author-avatar">${blog.author.charAt(0).toUpperCase()}</div>
+                                <span>${blog.author}</span>
+                            </div>
+                            <div>
+                                <span>${blog.created_at}</span>
+                                <span> • ${blog.likes} likes</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        blogsGrid.appendChild(blogCard);
+      });
+
+      hasNext = data.has_next;
+      currentPage += 1;
+      loading = false;
+      loadingIndicator.style.display = 'none';
+    })
+    .catch(() => {
+      loading = false;
+      loadingIndicator.style.display = 'none';
+    });
+}
+
+// Initial load
+fetchItems(currentPage);
+
+// Infinite scroll logic
+window.addEventListener('scroll', () => {
+  if (loading || !hasNext) return;
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const threshold = document.body.offsetHeight - 100; // 100px from bottom
+
+  if (scrollPosition >= threshold) {
+    fetchItems(currentPage);
+  }
+});
+</script>
+{% endblock content %}

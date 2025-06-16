@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}BlogSphere | Home{% endblock %}
+{% block content %}
+<div id="blog-detail" class="page">
+    <div class="blog-detail">
+        <div class="blog-header">
+            <h1 class="blog-detail-title" id="blogDetailTitle">{{blog.title}}</h1>
+            <div class="blog-detail-meta">
+                <div class="blog-author">
+                    <div class="author-avatar" id="blogDetailAuthorAvatar">{{blog.author.username|capfirst|slice:":1"}}</div>
+                    <span id="blogDetailAuthor">{{blog.author}}</span>
+                </div>
+                <span id="blogDetailDate">{{blog.created_at}}</span>
+                <span id="blogDetailReviews">{{blog.total_likes}} likes</span>
+            </div>
+        </div>
+        <img src="{{blog.thumbnail.url}}" alt="" style="width: 100%;" draggable="false" oncontextmenu="return false;" onmousedown="return event.button !== 0;">
+        <div class="blog-detail-content" id="blogDetailContent">
+            {{blog.content}}
+        </div>
+    </div>
+</div>
+{% endblock content %}

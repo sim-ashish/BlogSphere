@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}BlogSphere | Home{% endblock %}
+{% block content %}
+<div id="register" class="page">
+    <div class="auth-container">
+        <div class="auth-card animate-slide-up">
+            <h1 class="auth-title">Join BlogSphere</h1>
+            <p class="auth-subtitle">Create your account and start sharing your stories</p>
+            <form id="registerForm" onsubmit="registerUser(event)">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="regPassword" autocomplete="False" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+            <div class="auth-link">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,18 @@
+
+<header class="header">
+    <nav class="nav">
+        <a href="{% url 'home' %}" class="logo">BlogSphere</a>
+        <div class="nav-links">
+            <a href="{% url 'home' %}" class="nav-link">Home</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'create' %}" class="nav-link">Write</a>
+            <div class="profile-avatar" onclick="toggleProfile()" id="profileAvatar">
+                <span id="profileInitial">{{ user|capfirst|slice:":1"}}</span>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="nav-link" id="loginLink">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-primary" id="signupLink">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
