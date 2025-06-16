@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}BlogSphere | Home{% endblock %}
 {% block content %}
 <div id="blog-detail" class="page">
@@ -16,7 +17,7 @@
         </div>
         <img src="{{blog.thumbnail.url}}" alt="" style="width: 100%;" draggable="false" oncontextmenu="return false;" onmousedown="return event.button !== 0;">
         <div class="blog-detail-content" id="blogDetailContent">
-            {{blog.content}}
+            {{ blog.content|safe }}
         </div>
     </div>
 </div>

@@ -86,7 +86,20 @@ function registerUser(e){
     });
 }
 
-
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <p style="margin-top: 0.5rem; color: var(--text-secondary);">Image uploaded successfully</p>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
 
 // Global state
@@ -261,20 +274,7 @@ function registerUser(e){
         //     }
         // }
 
-        // function handleImageUpload(event) {
-        //     const file = event.target.files[0];
-        //     if (file) {
-        //         const reader = new FileReader();
-        //         reader.onload = function(e) {
-        //             const preview = document.getElementById('imagePreview');
-        //             preview.innerHTML = `
-        //                 <img src="${e.target.result}" alt="Preview" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        //                 <p style="margin-top: 0.5rem; color: var(--text-secondary);">Image uploaded successfully</p>
-        //             `;
-        //         };
-        //         reader.readAsDataURL(file);
-        //     }
-        // }
+        
 
         
 

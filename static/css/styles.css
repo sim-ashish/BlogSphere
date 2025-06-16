@@ -39,6 +39,8 @@ body {
     overflow-x: hidden;
 }
 
+
+
 /* Header Styles */
 .header {
     background: var(--background);
@@ -410,6 +412,13 @@ body {
     line-height: 1.8;
     color: var(--text-primary);
 }
+.blog-detail-content img{
+    max-width: 100%;   /* Make images responsive */
+    height: auto;      /* Keep aspect ratio */
+    max-height: 400px; /* Optional: limit max height */
+    display: block;
+    margin: 10px 0;
+}
 
 /* Create Blog Page */
 .create-blog-container {
@@ -437,6 +446,13 @@ body {
     border-radius: 0.5rem;
     flex-wrap: wrap;
 }
+
+/*Summer editor*/
+.note-editor {
+    height: 100vh !important;
+    margin: auto;
+  }
+
 
 .toolbar-btn {
     padding: 0.5rem;

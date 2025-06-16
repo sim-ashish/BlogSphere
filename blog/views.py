@@ -7,6 +7,13 @@ from django.core.paginator import Paginator
 from blog.models import BlogPost
 from django.shortcuts import get_object_or_404
 from blog.customdecorator import approved_blog_required
+from blog.forms import BlogPostForm
+import os
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.utils.crypto import get_random_string
 
 # Create your views here.
 
@@ -65,9 +72,24 @@ def register(request):
 def forgotPassword(request):
     return render(request, 'forgot-password.html')
 
+
 @login_required
 def createBlog(request):
-    return render(request, 'new-blog.html')
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            blog_post = form.save(commit=False)
+            blog_post.author = request.user 
+            blog_post.save()
+            messages.success(request, 'Blog created')
+            return redirect('home') 
+        else:
+            messages.error(request, 'Please fix the errors below.')
+    else:
+        form = BlogPostForm()
+    return render(request, 'new-blog.html', {'form': form})
+
+
 
 @approved_blog_required
 def detailBlog(request, author, blog_slug):

@@ -6,7 +6,7 @@ from blog.views import (index,
                         register,
                         detailBlog,
                         forgotPassword,
-                        createBlog)
+                        createBlog,)
 
 urlpatterns = [
     path('', index, name='home'),
@@ -16,5 +16,5 @@ urlpatterns = [
     path('create', createBlog, name='create'),
     path('forgot-password', forgotPassword, name='forgot_password'),
     path('detail/<str:author>/<slug:blog_slug>', detailBlog, name='detail'),
-    path('logout', logout_user, name='logout')
+    path('logout', logout_user, name='logout'),
 ]
