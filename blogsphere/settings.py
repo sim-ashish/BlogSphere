@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+# Load .env file variables
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,9 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
+    'django_ckeditor_5',
     'blog',
-    'users'
+    'users',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,17 +80,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blogsphere.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE'),
+        'USER': os.getenv('PGUSER'),
+        'PASSWORD': os.getenv('PGPASSWORD'),
+        'HOST': os.getenv('PGHOST'),
+        'PORT': '5432',
     }
 }
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDNAME'),
+    'API_KEY': os.getenv('APIKEY'),
+    'API_SECRET': os.getenv('APISECRET'),
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -104,6 +123,35 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+
+CKEDITOR_5_CONFIGS = {
+    'extends': {
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'link', 'blockQuote', 'code', 'codeBlock', '|',  # <-- added codeBlock here
+                'bulletedList', 'numberedList', 'outdent', 'indent', '|',
+                'insertTable', 'imageUpload', 'mediaEmbed', '|',
+                'undo', 'redo', 'removeFormat',
+            ]
+        },
+        'language': 'en',
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', 'imageStyle:full', 'imageStyle:side'
+            ]
+        },
+        'table': {
+            'contentToolbar': [
+                'tableColumn', 'tableRow', 'mergeTableCells'
+            ]
+        },
+        'mediaEmbed': {
+            'previewsInData': True
+        },
+    }
+}
 
 
 # Internationalization

@@ -1,43 +1,44 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}BlogSphere | Home{% endblock %}
 {% block content %}
 <div id="create-blog" class="page">
     <div class="create-blog-container">
         <h1 class="create-blog-title">Create New Blog</h1>
-        <form id="createBlogForm">
+        <form id="createBlogForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            {{ form.non_field_errors }}
             <div class="form-group">
-                <label class="form-label">Blog Title</label>
-                <input type="text" class="form-input" id="blogTitle" required>
+                <label for="blogTitle" class="form-label">Blog Title</label>
+                {{ form.title }}
+                {{ form.title.errors }}
             </div>
             
             <div class="form-group">
-                <label class="form-label">Blog Content</label>
-                <div class="editor-toolbar">
-                    <button type="button" class="toolbar-btn" onclick="formatText('bold')"><b>B</b></button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('italic')"><i>I</i></button>
-                    <button type="button" class="toolbar-btn" onclick="formatText('underline')"><u>U</u></button>
-                    <button type="button" class="toolbar-btn" onclick="insertList()">List</button>
-                    <button type="button" class="toolbar-btn" onclick="insertLink()">Link</button>
-                </div>
-                <textarea class="content-editor" id="blogContent" placeholder="Write your amazing story here..." required></textarea>
+                <label for="blogContent" class="form-label">Blog Content</label>
+                {{form.content}}
+                {{ form.content.errors }}
             </div>
-
             <div class="form-group">
-                <label class="form-label">Featured Image</label>
+                <label for="imageInput" class="form-label">Thumbnail Image</label>
                 <div class="image-upload">
                     <div class="upload-area" onclick="document.getElementById('imageInput').click()">
                         <p>Click to upload an image or drag and drop</p>
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                        {{form.thumbnail}}
                     </div>
+                    {{ form.thumbnail.errors }}
                     <div id="imagePreview" style="margin-top: 1rem;"></div>
                 </div>
             </div>
-
             <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="showPage('index')">Cancel</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
                 <button type="submit" class="btn btn-primary">Publish Blog</button>
             </div>
         </form>
     </div>
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
+
+<script src="{% static 'django_ckeditor_5/ckeditor.js' %}"></script>
 {% endblock content %}
