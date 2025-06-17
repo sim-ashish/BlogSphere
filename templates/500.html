@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Internal Server Error</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f2f6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #2c3e50;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+            animation: glitch 2s infinite;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .error-code::before,
+        .error-code::after {
+            content: '500';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+        }
+
+        .error-code::before {
+            animation: glitch-1 0.5s infinite;
+            color: #e74c3c;
+            z-index: -1;
+        }
+
+        .error-code::after {
+            animation: glitch-2 0.5s infinite;
+            color: #3498db;
+            z-index: -2;
+        }
+
+        .error-title {
+            font-size: 2.5rem;
+            color: #34495e;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .retry-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 1.5s both;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 0 1rem 1rem 0;
+        }
+
+        .retry-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+        }
+
+        .home-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: #2c3e50;
+            text-decoration: none;
+            border: 2px solid #2c3e50;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+
+        .home-button:hover {
+            background: #2c3e50;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .broken-robot {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            position: relative;
+            animation: shake 2s infinite ease-in-out;
+        }
+
+        .robot-head {
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+            border-radius: 10px;
+            position: absolute;
+            left: 50%;
+            top: 20%;
+            transform: translateX(-50%);
+            border: 2px solid #7f8c8d;
+        }
+
+        .robot-eye {
+            width: 12px;
+            height: 12px;
+            background: #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            animation: blink 3s infinite;
+        }
+
+        .robot-eye.left {
+            left: 20px;
+        }
+
+        .robot-eye.right {
+            right: 20px;
+        }
+
+        .robot-body {
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(45deg, #ecf0f1, #bdc3c7);
+            border-radius: 15px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #95a5a6;
+        }
+
+        .robot-arm {
+            width: 40px;
+            height: 12px;
+            background: #95a5a6;
+            border-radius: 6px;
+            position: absolute;
+            top: 60px;
+        }
+
+        .robot-arm.left {
+            left: -35px;
+            animation: wave 1s infinite ease-in-out;
+        }
+
+        .robot-arm.right {
+            right: -35px;
+            animation: wave 1s infinite ease-in-out 0.5s;
+        }
+
+        .sparks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #f39c12;
+            border-radius: 50%;
+            animation: sparkle 1.5s infinite ease-out;
+        }
+
+        .spark:nth-child(1) {
+            top: 30%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .spark:nth-child(2) {
+            top: 50%;
+            right: 30%;
+            animation-delay: 0.3s;
+        }
+
+        .spark:nth-child(3) {
+            bottom: 40%;
+            left: 40%;
+            animation-delay: 0.6s;
+        }
+
+        .spark:nth-child(4) {
+            top: 70%;
+            right: 20%;
+            animation-delay: 0.9s;
+        }
+
+        .floating-gears {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .gear {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(52, 73, 94, 0.1);
+            animation: rotateGear 8s linear infinite;
+        }
+
+        .gear:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-duration: 6s;
+        }
+
+        .gear:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-duration: 10s;
+            animation-direction: reverse;
+        }
+
+        .gear:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-duration: 8s;
+        }
+
+        .gear:nth-child(4) {
+            top: 30%;
+            right: 30%;
+            animation-duration: 12s;
+            animation-direction: reverse;
+        }
+
+        @keyframes glitch {
+            0%, 100% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            10% {
+                transform: translate(-2px, -2px);
+                opacity: 0.8;
+            }
+            20% {
+                transform: translate(2px, 2px);
+                opacity: 0.8;
+            }
+            30% {
+                transform: translate(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            15% {
+                transform: translate(2px, -2px);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translate(-2px, 2px);
+                opacity: 0.7;
+            }
+            35% {
+                transform: translate(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(20deg);
+            }
+        }
+
+        @keyframes sparkle {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) translateY(-30px);
+            }
+        }
+
+        @keyframes rotateGear {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            .error-title {
+                font-size: 2rem;
+            }
+            .error-message {
+                font-size: 1rem;
+            }
+            .broken-robot {
+                width: 150px;
+                height: 150px;
+            }
+            .retry-button,
+            .home-button {
+                display: block;
+                margin: 1rem auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-gears">
+        <div class="gear">⚙️</div>
+        <div class="gear">⚙️</div>
+        <div class="gear">⚙️</div>
+        <div class="gear">⚙️</div>
+    </div>
+    
+    <div class="error-container">
+        <div class="error-code">500</div>
+        <div class="broken-robot">
+            <div class="robot-head">
+                <div class="robot-eye left"></div>
+                <div class="robot-eye right"></div>
+            </div>
+            <div class="robot-body">
+                <div class="robot-arm left"></div>
+                <div class="robot-arm right"></div>
+            </div>
+            <div class="sparks">
+                <div class="spark"></div>
+                <div class="spark"></div>
+                <div class="spark"></div>
+                <div class="spark"></div>
+            </div>
+        </div>
+        <h1 class="error-title">Something Went Wrong!</h1>
+        <p class="error-message">
+            Our server seems to have encountered a technical hiccup. 
+            Our robot engineers are working hard to fix this issue.
+        </p>
+        <a href="javascript:location.reload()" class="retry-button">🔄 Try Again</a>
+        <a href="/" class="home-button">🏠 Go Home</a>
+    </div>
+</body>
+</html>
