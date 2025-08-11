@@ -3,6 +3,8 @@ from django.conf import settings
 from blog.utils import generate_unique_slug
 from django_ckeditor_5.fields import CKEditor5Field
 
+from simple_history.models import HistoricalRecords
+
 # class BlogPost(models.Model):
 #     title = models.CharField(max_length=200)
 #     content = RichTextField() 
@@ -21,6 +23,7 @@ class BlogPost(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
     admin_approved = models.BooleanField(default=False)
+    history = HistoricalRecords()  # For tracking changes
     
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,

@@ -6,18 +6,19 @@
         <div class="auth-card animate-slide-up">
             <h1 class="auth-title">Join BlogSphere</h1>
             <p class="auth-subtitle">Create your account and start sharing your stories</p>
-            <form id="registerForm" onsubmit="registerUser(event)">
+            <form id="registerForm" method="post" onsubmit="validateForm(event)">
+                {% csrf_token %}
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input type="text" class="form-input" id="regUsername" required>
+                    <input type="text" class="form-input" name="username" id="regUsername" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="regEmail" required>
+                    <input type="email" class="form-input" name="email" id="regEmail" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="regPassword" autocomplete="False" required>
+                    <input type="password" class="form-input" name="password" id="regPassword" autocomplete="False" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
             </form>

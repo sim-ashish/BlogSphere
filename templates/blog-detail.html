@@ -15,10 +15,22 @@
                 <span id="blogDetailReviews">{{blog.total_likes}} likes</span>
             </div>
         </div>
+        {% if blog.thumbnail %}
         <img src="{{blog.thumbnail.url}}" alt="" style="width: 100%;" draggable="false" oncontextmenu="return false;" onmousedown="return event.button !== 0;">
+        {% endif %}
         <div class="blog-detail-content" id="blogDetailContent">
             {{ blog.content|safe }}
         </div>
-    </div>
+        <hr>
+        {% if user.is_authenticated %}
+        <div class="blog-detail-actions">
+            {% if not liked %}
+            <button class="btn btn-primary" id="likeButton"><i class="fa-regular fa-thumbs-up"></i></button>
+            {% else %}
+            <button class="btn btn-danger" id="dislikeButton"><i class="fa-solid fa-thumbs-up"></i></button>
+            {% endif %}
+            <button class="btn btn-secondary" id="commentButton"><i class="fa-solid fa-message"></i></button>
+        </div>
+        {% endif %}
 </div>
 {% endblock content %}
