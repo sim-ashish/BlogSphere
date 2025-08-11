@@ -40,7 +40,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function registerUser(e){
+function validateForm(e){
     e.preventDefault();
     const csrftoken = getCookie('csrftoken');
     // console.log(e.target)
@@ -55,35 +55,8 @@ function registerUser(e){
         showNotification('Password must be at least 6 characters long', 'error');
         return;
     }
-    fetch('/register',{
-        method:"POST",
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-          },
-        body:JSON.stringify({
-            username:`${username}`,
-            email:`${email}`,
-            password : `${password}`
-        })
-    })
-        .then(response =>{ 
-            if (response.ok){
-                setTimeout(()=>{
-                    window.location.href = '/login'
-                },2000)
-                showNotification("Account created now login",)
-            }
-            else{
-                showNotification("Some error occur", "error")
-            }
-        })
-        // .then(data => {
-        // console.log('Success:', data);
-        // })
-        .catch((error) => {
-        console.error('Error:', error);
-    });
+    
+    e.target.submit();  
 }
 
 function handleImageUpload(event) {

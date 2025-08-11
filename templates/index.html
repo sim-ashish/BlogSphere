@@ -33,10 +33,12 @@ let hasNext = true;
 const blogsGrid = document.getElementById('blogsGrid');
 const loadingIndicator = document.getElementById('loading');
 
+
 function fetchItems(page) {
   if (loading || !hasNext) return;
   loading = true;
   loadingIndicator.style.display = 'block';
+  
   fetch(`/blogs/?page=${page}`)
     .then(response => response.json())
     .then(data => {
@@ -45,7 +47,10 @@ function fetchItems(page) {
         blogCard.className = 'blog-card animate-slide-up';
         blogCard.onclick = () => window.location.href = `/detail/${blog.author}/${blog.slug}`;
         blogCard.innerHTML = `
-                    <div class="blog-image"><img src="${blog.thumbnail}" alt="${blog.thumbnail}"></div>
+                    ${blog.thumbnail
+                        ? `<div class="blog-image"><img src="${blog.thumbnail}" alt="${blog.thumbnail}"></div>`
+                        : `<div class="blog-image">${blog.title}</div>`
+                      }
                     <div class="blog-content">
                         <h3 class="blog-title">${blog.title}</h3>
                         <p class="blog-excerpt">${blog.title}</p>

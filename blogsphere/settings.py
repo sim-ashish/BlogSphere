@@ -13,14 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 # Replace the DATABASES section of your settings.py with this
 
 from pathlib import Path
-import os
-from dotenv import load_dotenv
-from urllib.parse import urlparse
+from decouple import config
 
-# Load .env file variables
-load_dotenv()
-
-tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t*u^nkmyvxhfiq2(8@-^di6%+p^j$vk#j680%y9_6z3)p2$b)k'
+SECRET_KEY = config('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'cloudinary_storage',
+    'simple_history',
+    'cacheops',
     'django_ckeditor_5',
     'blog',
     'users',
@@ -58,6 +54,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,6 +62,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+    # 'cacheops.middleware.CacheOpsMiddleware',   # Add CacheOps middleware
+    
 ]
 
 ROOT_URLCONF = 'blogsphere.urls'
@@ -90,23 +90,24 @@ WSGI_APPLICATION = 'blogsphere.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', ''),
-        'USER': tmpPostgres.username,
-        'PASSWORD': tmpPostgres.password,
-        'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
-    }
-}
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDNAME'),
-    'API_KEY': os.getenv('APIKEY'),
-    'API_SECRET': os.getenv('APISECRET'),
+    'CLOUD_NAME': config('CLOUDNAME'),
+    'API_KEY': config('APIKEY'),
+    'API_SECRET': config('APISECRET'),
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('PGDATABASE'),
+        'USER': config('PGUSER'),
+        'PASSWORD': config('PGPASSWORD'),
+        'HOST': config('PGHOST'),
+        'PORT': '5432',  # default PostgreSQL port
+    }
 }
 
 # Password validation
@@ -160,6 +161,39 @@ CKEDITOR_5_CONFIGS = {
     }
 }
 
+# CACHEOPS_ENABLED = False    # Uncomment to disable cacheops globally
+
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/1',  # Use your Redis URL & DB
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
+
+
+
+# CACHEOPS_REDIS = {
+#     'host': '127.0.0.1',
+#     'port': 6379,
+#     'db': 1,
+#     'socket_timeout': 3,
+# }
+
+# CACHEOPS = {
+    # Cache all queries from 'myapp' models for 5 minutes
+    # 'blog.*': {'ops': 'all', 'timeout': 60*5},
+    
+    # Cache only 'get' and 'fetch' ops on 'auth.User' for 15 minutes
+    # 'auth.user': {'ops': ('get', 'fetch'), 'timeout': 15*60},
+
+    # Disable cache for some model explicitly
+    # 'otherapp.nocachemodel': None,
+# }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -176,13 +210,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static" # your project-level static files
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Define the base URL for serving media files

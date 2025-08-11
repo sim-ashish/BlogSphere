@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -8,14 +7,28 @@ from blog.models import BlogPost
 from django.shortcuts import get_object_or_404
 from blog.customdecorator import approved_blog_required
 from blog.forms import BlogPostForm
+import logging
 import os
+import dataclasses
+import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
+from django.db import connection
 
-# Create your views here.
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+
+
+@dataclasses.dataclass
+class Color:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    RESET = '\033[0m'
 
 
 def index(request):
@@ -23,7 +36,16 @@ def index(request):
 
 def fetch_blogs(request):
     page_number = request.GET.get('page', 1)
-    blogs = BlogPost.objects.filter(admin_approved = True).order_by('?')  # Or any order
+
+    # Clear previous queries
+    connection.queries.clear()
+
+    blogs = BlogPost.objects.filter(admin_approved = True)          #.order_by('?')  # Or any order
+
+    if connection.queries:
+        logging.info(f"{Color.RED}Fetch blogs from DB : ✅{Color.RESET}")
+    else:
+        logging.info(f"{Color.GREEN}Fetch blogs from Cache, No DB hit ❌{Color.RESET}")
 
     paginator = Paginator(blogs, 10)  # 10 items per page
 
@@ -38,7 +60,7 @@ def fetch_blogs(request):
             'id': blog.id,
             'slug': blog.slug,
             'title': blog.title,
-            'thumbnail':blog.thumbnail.url if blog.thumbnail.url else None,
+            'thumbnail':blog.thumbnail.url if blog.thumbnail else None,
             'author': blog.author.username,
             'likes':blog.total_likes,
             'created_at':blog.created_at.strftime("%d-%m-%Y")
@@ -49,29 +71,6 @@ def fetch_blogs(request):
         'blogs': blogs_data,
         'has_next': page_obj.has_next(),
     })
-
-def login_user(request):
-    if request.method == 'POST':
-        user_email = request.POST.get('email')
-        user_password = request.POST.get('password')
-        user = authenticate(email=user_email, password=user_password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, 'login success')
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid credentials')
-            return redirect('login')
-    return render(request, 'login.html')
-
-def register(request):
-    if request.method == 'POST':
-        print(request.body)
-    return render(request, 'register.html')
-
-def forgotPassword(request):
-    return render(request, 'forgot-password.html')
-
 
 @login_required
 def createBlog(request):
@@ -90,14 +89,25 @@ def createBlog(request):
     return render(request, 'new-blog.html', {'form': form})
 
 
-
 @approved_blog_required
 def detailBlog(request, author, blog_slug):
+    liked = False
     blog = get_object_or_404(BlogPost, author__username = author, slug = blog_slug)
-    return render(request, 'blog-detail.html', locals())
+    if request.user.is_authenticated:
+        liked = request.user in blog.likes.all()
+    else:
+        liked = False
+    return render(request, 'blog-detail.html', {'blog': blog, 'liked': liked})
+
 
 @login_required
-def logout_user(request):
-    logout(request)
-    messages.success(request, 'logout success')
-    return redirect('login')
+def like_unlike_blog(request, blog_id):
+    blog = get_object_or_404(BlogPost, id=blog_id)
+    if request.user in blog.likes.all():
+        blog.likes.remove(request.user)
+        liked = False
+    else:
+        blog.liked_by.add(request.user)
+        liked = True
+    blog.save()
+    return JsonResponse({'liked': liked, 'total_likes': blog.total_likes})
