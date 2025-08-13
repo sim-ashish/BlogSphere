@@ -45,3 +45,8 @@ class BlogPost(models.Model):
     @property
     def total_likes(self):
         return self.likes.count()
+    
+
+class UploadedImage(models.Model):
+    image = models.ImageField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
