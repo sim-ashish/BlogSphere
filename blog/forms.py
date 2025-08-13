@@ -27,3 +27,11 @@ class BlogPostForm(forms.ModelForm):
             "content" : _("Blog Content"),
             "thumbnail": _("Thumbnail Image")
         }
+
+
+from .models import UploadedImage
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = UploadedImage
+        fields = ['image']

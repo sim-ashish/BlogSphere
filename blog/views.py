@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
 from django.db import connection
+from .forms import UploadImageForm
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -111,3 +112,22 @@ def like_unlike_blog(request, blog_id):
         liked = True
     blog.save()
     return JsonResponse({'liked': liked, 'total_likes': blog.total_likes})
+
+
+
+# Image Upload Test View
+def test_upload_view(request):
+    uploaded_url = None
+
+    if request.method == 'POST':
+        form = UploadImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_image = form.save()  # Saves to Cloudinary
+            uploaded_url = uploaded_image.image.url  # Now you can access the URL
+    else:
+        form = UploadImageForm()
+
+    return render(request, 'test_upload.html', {
+        'form': form,
+        'uploaded_url': uploaded_url,
+    })
