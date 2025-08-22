@@ -14,7 +14,6 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
-from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
 from django.db import connection
 from .forms import UploadImageForm

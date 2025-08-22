@@ -93,6 +93,7 @@ WSGI_APPLICATION = 'blogsphere.wsgi.application'
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+print("📦 DEFAULT_FILE_STORAGE set to:", DEFAULT_FILE_STORAGE)
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDNAME'),
