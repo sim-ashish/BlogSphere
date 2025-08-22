@@ -40,16 +40,16 @@ BRANCH = config('BRANCH', default='local')
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'cloudinary_storage',
-    'cloudinary',
     'simple_history',
-    'cacheops',
+    # 'cacheops',
     'django_ckeditor_5',
     'blog',
     'users',
@@ -97,7 +97,6 @@ WSGI_APPLICATION = 'blogsphere.wsgi.application'
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-print("📦 DEFAULT_FILE_STORAGE set to:", DEFAULT_FILE_STORAGE)
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDNAME'),
@@ -238,18 +237,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
-import logging
-from django.core.files.storage import default_storage
-
-logger = logging.getLogger(__name__)
-logger.warning(f"📦 DEFAULT_FILE_STORAGE in use: {default_storage.__class__.__module__}.{default_storage.__class__.__name__}")
-
-
-
-print("Cloudinary check:")
-print("CLOUDNAME:", config("CLOUDNAME", default="❌ Missing"))
-print("APIKEY:", config("APIKEY", default="❌ Missing"))
-print("APISECRET:", "✔️" if config("APISECRET", default=None) else "❌ Missing")
