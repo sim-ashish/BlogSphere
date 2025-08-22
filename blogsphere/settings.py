@@ -43,14 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
     'cloudinary_storage',
+    'cloudinary',
     'simple_history',
     'cacheops',
     'django_ckeditor_5',
     'blog',
     'users',
 ]
+
 
 
 
