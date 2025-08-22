@@ -55,6 +55,10 @@ def fetch_blogs(request):
         # If page is invalid, return empty list
         return JsonResponse({'blogs': [], 'has_next': False})
 
+    for blog in page_obj:
+        if blog.thumbnail:
+            logging.info(f"{Color.YELLOW}Blog URL : {blog.thumbnail.url}{Color.RESET}")
+
     blogs_data = [
         {
             'id': blog.id,

@@ -32,10 +32,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['blogsphere-67hj.onrender.com']
 
-ALLOWED_HOSTS.append('localhost')
-ALLOWED_HOSTS.append('127.0.0.1')
-
-BRANCH = config('BRANCH', default='local')
+BRANCH = config('BRANCH', default='stage')
 
 # Application definition
 
