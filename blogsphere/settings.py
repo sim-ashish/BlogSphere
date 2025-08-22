@@ -233,3 +233,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+import logging
+from django.core.files.storage import default_storage
+
+logger = logging.getLogger(__name__)
+logger.warning(f"📦 DEFAULT_FILE_STORAGE in use: {default_storage.__class__.__module__}.{default_storage.__class__.__name__}")
+
+
+
+print("Cloudinary check:")
+print("CLOUDNAME:", config("CLOUDNAME", default="❌ Missing"))
+print("APIKEY:", config("APIKEY", default="❌ Missing"))
+print("APISECRET:", "✔️" if config("APISECRET", default=None) else "❌ Missing")
