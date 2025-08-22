@@ -32,6 +32,9 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['blogsphere-67hj.onrender.com']
 
+ALLOWED_HOSTS.append('localhost')
+ALLOWED_HOSTS.append('127.0.0.1')
+
 BRANCH = config('BRANCH', default='local')
 
 # Application definition
@@ -43,14 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
     'cloudinary_storage',
+    'cloudinary',
     'simple_history',
     'cacheops',
     'django_ckeditor_5',
     'blog',
     'users',
 ]
+
 
 
 
